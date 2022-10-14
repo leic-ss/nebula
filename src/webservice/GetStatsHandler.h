@@ -37,10 +37,12 @@ class GetStatsHandler : public proxygen::RequestHandler {
                   const std::string& statName,
                   const std::string& error) const;
   std::string toStr(folly::dynamic& vals) const;
+  std::string toMonitor(folly::dynamic& vals) const;
 
  protected:
   HttpCode err_{HttpCode::SUCCEEDED};
   bool returnJson_{false};
+  bool returnMonitor_{false};
   std::vector<std::string> statNames_;
 };
 

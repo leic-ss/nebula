@@ -13,6 +13,14 @@
 #include "common/base/Base.h"
 #include "common/stats/StatsManager.h"
 #include "webservice/Common.h"
+#include "common/network/NetworkUtils.h"
+#include "common/nlohmann/json.hpp"
+
+#include <time.h>
+
+DECLARE_string(local_ip);
+DECLARE_int32(port);
+DECLARE_string(role);
 
 namespace nebula {
 
@@ -32,6 +40,7 @@ void GetStatsHandler::onRequest(std::unique_ptr<HTTPMessage> headers) noexcept {
 
   if (headers->hasQueryParam("format")) {
     returnJson_ = (headers->getQueryParam("format") == "json");
+    returnMonitor_ = (headers->getQueryParam("format") == "monitor");
   }
 
   if (headers->hasQueryParam("stats")) {
@@ -58,7 +67,15 @@ void GetStatsHandler::onEOM() noexcept {
 
   // read stats
   folly::dynamic vals = getStats();
-  std::string body = returnJson_ ? folly::toPrettyJson(vals) : toStr(vals);
+  std::string body;
+  if (returnJson_) {
+    body = folly::toPrettyJson(vals);
+  } else if (returnMonitor_) {
+    body = toMonitor(vals);
+  } else {
+    body = toStr(vals);
+  }
+
   ResponseBuilder(downstream_)
       .status(WebServiceUtils::to(HttpStatusCode::OK),
               WebServiceUtils::toString(HttpStatusCode::OK))
@@ -116,6 +133,45 @@ std::string GetStatsHandler::toStr(folly::dynamic& vals) const {
     }
   }
   return ss.str();
+}
+
+std::string GetStatsHandler::toMonitor(folly::dynamic& vals) const {
+  uint64_t nowtime = ::time(NULL);
+  uint64_t report_timestamp = nowtime - (nowtime % 60);
+
+  std::string hostName;
+  if (FLAGS_local_ip.empty()) {
+    hostName = nebula::network::NetworkUtils::getHostname();
+  } else {
+    auto status = nebula::network::NetworkUtils::validateHostOrIp(FLAGS_local_ip);
+    if (!status.ok()) {
+      return status.message();
+    }
+    hostName = FLAGS_local_ip;
+  }
+  nebula::HostAddr localhost{hostName, FLAGS_port};
+
+  std::ostringstream common_tag_str;
+  common_tag_str << "project=nebula" << ",city=jd" << ",ip_port=" << localhost.toString()
+                 << ",module=" << FLAGS_role;
+
+  nlohmann::json stat_obj = nlohmann::json::array();
+  nlohmann::json metric_obj;
+  metric_obj["endpoint"] = localhost.toString();
+  metric_obj["step"] = 60;
+  metric_obj["counterType"] = "GAUGE";
+  metric_obj["timestamp"] = report_timestamp;
+
+  for (auto& counter : vals) {
+    for (auto& m : counter.items()) {
+      metric_obj["metric"] = "pv";
+      metric_obj["value"] = m.second.asInt();
+      metric_obj["tags"] = common_tag_str.str() + ",type=" + m.first.asString();
+      stat_obj.push_back(metric_obj);
+    }
+  }
+
+  return stat_obj.dump();
 }
 
 }  // namespace nebula

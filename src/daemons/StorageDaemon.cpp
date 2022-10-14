@@ -35,6 +35,8 @@ DEFINE_string(meta_server_addrs,
               "the format looks like ip1:port1, ip2:port2, ip3:port3");
 DECLARE_int32(port);
 
+DEFINE_string(role, "unknown", "role");
+
 using nebula::operator<<;
 using nebula::HostAddr;
 using nebula::ProcessUtils;

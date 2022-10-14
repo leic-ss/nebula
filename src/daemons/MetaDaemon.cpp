@@ -65,6 +65,8 @@ extern Status setupLogging();
 extern Status setupBreakpad();
 #endif
 
+DEFINE_string(role, "unknown", "role");
+
 namespace nebula {
 namespace meta {
 const std::string kClusterIdKey = "__meta_cluster_id_key__";  // NOLINT
