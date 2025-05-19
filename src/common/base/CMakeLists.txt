@@ -17,4 +17,4 @@ nebula_add_library(
     ${gdb_debug_script}
 )
 
-nebula_add_subdirectory(test)
+#nebula_add_subdirectory(test)

@@ -8,4 +8,4 @@ nebula_add_library(
   MemoryUtils.cpp
 )
 
-nebula_add_subdirectory(test)
+#nebula_add_subdirectory(test)

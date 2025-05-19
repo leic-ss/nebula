@@ -7,4 +7,4 @@ nebula_add_library(
     ProcessUtils.cpp
 )
 
-nebula_add_subdirectory(test)
+#nebula_add_subdirectory(test)

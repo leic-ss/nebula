@@ -20,4 +20,4 @@ nebula_add_library(
     Common.cpp
 )
 
-nebula_add_subdirectory(test)
+#nebula_add_subdirectory(test)

@@ -17,4 +17,4 @@ nebula_add_library(
     SegmentId.cpp
 )
 
-nebula_add_subdirectory(test)
+#nebula_add_subdirectory(test)

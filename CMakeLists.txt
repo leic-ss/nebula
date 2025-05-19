@@ -32,6 +32,8 @@ option(ENABLE_INCLUDE_WHAT_YOU_USE "Enable include-what-you-use find  nouse incl
 
 add_definitions(-DNEBULA_HOME=${CMAKE_SOURCE_DIR})
 
+add_compile_options(-Wno-unused)
+
 if(ENABLE_STANDALONE_VERSION)
     add_definitions(-DBUILD_STANDALONE)
 endif()

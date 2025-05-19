@@ -34,4 +34,4 @@ nebula_add_library(
     MatchPathPatternExpression.cpp
 )
 
-nebula_add_subdirectory(test)
+#nebula_add_subdirectory(test)

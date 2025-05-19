@@ -154,6 +154,33 @@ nebula_add_executable(
         wangle
 )
 
+nebula_add_executable(
+    NAME
+        nebula-bulkload
+    SOURCES
+        BulkloadDaemon.cpp
+        SetupLogging.cpp
+        SetupBreakpad.cpp
+    OBJECTS
+        $<TARGET_OBJECTS:storage_server>
+        $<TARGET_OBJECTS:internal_storage_service_handler>
+        $<TARGET_OBJECTS:graph_storage_service_handler>
+        $<TARGET_OBJECTS:storage_admin_service_handler>
+        $<TARGET_OBJECTS:storage_http_handler>
+        $<TARGET_OBJECTS:storage_transaction_executor>
+        $<TARGET_OBJECTS:internal_storage_client_obj>
+        $<TARGET_OBJECTS:storage_client_obj>
+        $<TARGET_OBJECTS:storage_client_base_obj>
+        $<TARGET_OBJECTS:storage_common_obj>
+        ${common_deps}
+        ${storage_meta_deps}
+    LIBRARIES
+        ${ROCKSDB_LIBRARIES}
+        ${THRIFT_LIBRARIES}
+        ${PROXYGEN_LIBRARIES}
+        wangle
+)
+
 install(
     TARGETS
         nebula-graphd

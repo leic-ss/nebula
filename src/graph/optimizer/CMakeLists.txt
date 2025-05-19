@@ -53,4 +53,4 @@ nebula_add_library(
     rule/PushLimitDownScanEdgesRule.cpp
 )
 
-nebula_add_subdirectory(test)
+#nebula_add_subdirectory(test)

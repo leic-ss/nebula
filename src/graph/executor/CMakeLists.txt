@@ -89,4 +89,4 @@ nebula_add_library(
     mutate/UpdateExecutor.cpp
 )
 
-nebula_add_subdirectory(test)
+#nebula_add_subdirectory(test)

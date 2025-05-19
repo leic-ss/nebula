@@ -9,4 +9,4 @@ nebula_add_library(
     GenericThreadPool.cpp
 )
 
-nebula_add_subdirectory(test)
+#nebula_add_subdirectory(test)

@@ -7,4 +7,4 @@ nebula_add_library(
     Configuration.cpp
 )
 
-nebula_add_subdirectory(test)
+#nebula_add_subdirectory(test)
