@@ -65,6 +65,7 @@ void MetaHttpReplaceHostHandler::onEOM() noexcept {
                   WebServiceUtils::toString(HttpStatusCode::METHOD_NOT_ALLOWED))
           .sendWithEOM();
       return;
+      
     case HttpCode::E_ILLEGAL_ARGUMENT:
       LOG(INFO) << errMsg_;
       ResponseBuilder(downstream_)

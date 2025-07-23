@@ -30,6 +30,10 @@
 #include "storage/http/StorageHttpAdminHandler.h"
 #include "storage/http/StorageHttpPropertyHandler.h"
 #include "storage/http/StorageHttpStatsHandler.h"
+#include "storage/http/StorageHttpIngestHandler.h"
+#include "storage/http/StorageHttpDownloadHandler.h"
+#include "storage/http/StorageHttpCheckHandler.h"
+#include "storage/http/StorageHttpListHandler.h"
 #include "storage/transaction/TransactionManager.h"
 #include "version/Version.h"
 #include "webservice/Router.h"
@@ -109,6 +113,18 @@ bool StorageServer::initWebService() {
   });
   router.get("/rocksdb_property").handler([this](web::PathParams&&) {
     return new storage::StorageHttpPropertyHandler(schemaMan_.get(), kvstore_.get());
+  });
+  router.get("/ingest").handler([this](web::PathParams&&) {
+    return new storage::StorageHttpIngestHandler(kvstore_.get());
+  });
+  router.get("/download").handler([this](web::PathParams&&) {
+    return new storage::StorageHttpDownloadHandler(kvstore_.get());
+  });
+  router.get("/check").handler([this](web::PathParams&&) {
+    return new storage::StorageHttpCheckHandler();
+  });
+  router.get("/list").handler([this](web::PathParams&&) {
+    return new storage::StorageHttpListHandler();
   });
 
 #ifndef BUILD_STANDALONE

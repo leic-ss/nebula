@@ -24,6 +24,8 @@
 #include "meta/MetaServiceHandler.h"
 #include "meta/MetaVersionMan.h"
 #include "meta/http/MetaHttpReplaceHostHandler.h"
+#include "meta/http/MetaHttpClusterInfoHandler.h"
+#include "meta/http/MetaHttpJobInfoHandler.h"
 #include "meta/processors/job/JobManager.h"
 #include "meta/stats/MetaStats.h"
 #include "webservice/Router.h"
@@ -163,6 +165,16 @@ nebula::Status initWebService(nebula::WebService* svc, nebula::kvstore::KVStore*
   auto& router = svc->router();
   router.get("/replace").handler([kvstore](PathParams&&) {
     auto handler = new nebula::meta::MetaHttpReplaceHostHandler();
+    handler->init(kvstore);
+    return handler;
+  });
+  router.get("/clusterinfo").handler([kvstore](PathParams&&) {
+    auto handler = new nebula::meta::MetaHttpClusterInfoHandler();
+    handler->init(kvstore);
+    return handler;
+  });
+  router.get("/jobinfo").handler([kvstore](PathParams&&) {
+    auto handler = new nebula::meta::MetaHttpJobInfoHandler();
     handler->init(kvstore);
     return handler;
   });
