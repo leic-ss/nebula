@@ -23,6 +23,8 @@ cmake_minimum_required(VERSION 3.9.0)
 # Set the project name
 project("Nebula Graph" C CXX)
 
+SET(CMAKE_VERBOSE_MAKEFILE on)
+
 option(ENABLE_PACK_ONE "Whether to package into one" ON)
 option(ENABLE_VERBOSE_BISON "Enable Bison to report state" OFF)
 option(ENABLE_CONSOLE_COMPILATION "Enable nebula-console compilation" OFF)
@@ -33,6 +35,8 @@ option(ENABLE_INCLUDE_WHAT_YOU_USE "Enable include-what-you-use find  nouse incl
 add_definitions(-DNEBULA_HOME=${CMAKE_SOURCE_DIR})
 
 add_compile_options(-Wno-unused)
+add_compile_options(-O0)
+add_compile_options(-gdwarf-4 -gstrict-dwarf)
 
 if(ENABLE_STANDALONE_VERSION)
     add_definitions(-DBUILD_STANDALONE)
