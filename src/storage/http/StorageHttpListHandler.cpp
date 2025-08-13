@@ -19,6 +19,8 @@
  #include "common/cpphttplib/httplib.h"
  #include "kvstore/NebulaStore.h"
  
+ DECLARE_string(local_agent_dir);
+
   namespace nebula {
   namespace storage {
   
@@ -43,7 +45,7 @@
 
     hdfspath_ = headers->getQueryParam("hdfspath");
 
-    std::string local_addr = "127.0.0.1:8018";
+    std::string local_addr = FLAGS_local_agent_dir;
     std::string local_path = "/nebulahdfslist?hdfspath=" + hdfspath_;
 
     httplib::Client cli(local_addr);
