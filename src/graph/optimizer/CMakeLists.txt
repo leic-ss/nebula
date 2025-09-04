@@ -42,6 +42,8 @@ nebula_add_library(
     rule/TagIndexFullScanRule.cpp
     rule/EdgeIndexFullScanRule.cpp
     rule/PushLimitDownIndexScanRule.cpp
+    rule/PushLimitDownIndexScanAppendVertexRule.cpp
+    rule/PushLimitDownIndexScanFilterAppendVertexRule.cpp
     rule/PushLimitDownProjectRule.cpp
     rule/EliminateRowCollectRule.cpp
     rule/PushLimitDownScanAppendVerticesRule.cpp
