@@ -66,7 +66,9 @@ class ExpressionProps final {
   void insertInputProp(folly::StringPiece prop);
   void insertVarProp(const std::string& outputVar, folly::StringPiece prop);
   void insertSrcTagProp(TagID tagId, folly::StringPiece prop);
+  void keepSrcTagProp(TagID tagId);
   void insertDstTagProp(TagID tagId, folly::StringPiece prop);
+  void keepDstTagProp(TagID tagId);
   void insertEdgeProp(EdgeType edgeType, folly::StringPiece prop);
   void insertTagNameIds(const std::string& name, TagID tagId);
   void insertTagProp(TagID tagId, folly::StringPiece prop);

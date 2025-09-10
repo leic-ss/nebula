@@ -1521,6 +1521,24 @@ over_clause
     | KW_OVER over_edges KW_BIDIRECT {
         $$ = new OverClause($2, storage::cpp2::EdgeDirection::BOTH);
     }
+    | KW_OVER STAR L_PAREN name_label R_ARROW name_label R_PAREN {
+        $$ = new OverClause(true, $4, $6);
+    }
+    | KW_OVER STAR L_PAREN name_label R_ARROW name_label R_PAREN KW_REVERSELY {
+        $$ = new OverClause(true, $4, $6, storage::cpp2::EdgeDirection::IN_EDGE);
+    }
+    | KW_OVER STAR L_PAREN name_label R_ARROW name_label R_PAREN KW_BIDIRECT {
+        $$ = new OverClause(true, $4, $6, storage::cpp2::EdgeDirection::BOTH);
+    }
+    | KW_OVER over_edges L_PAREN name_label R_ARROW name_label R_PAREN {
+        $$ = new OverClause($2, $4, $6);
+    }
+    | KW_OVER over_edges L_PAREN name_label R_ARROW name_label R_PAREN KW_REVERSELY {
+        $$ = new OverClause($2, $4, $6, storage::cpp2::EdgeDirection::IN_EDGE);
+    }
+    | KW_OVER over_edges L_PAREN name_label R_ARROW name_label R_PAREN KW_BIDIRECT {
+        $$ = new OverClause($2, $4, $6, storage::cpp2::EdgeDirection::BOTH);
+    }
     ;
 
 where_clause

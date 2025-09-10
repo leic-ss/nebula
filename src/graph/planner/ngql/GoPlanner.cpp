@@ -212,6 +212,23 @@ PlanNode* GoPlanner::buildJoinDstPlan(PlanNode* dep) {
                                       {},
                                       true);
 
+  // Node has tag without property
+  /*
+  if (goCtx_->exprProps.dstTagProps().size() == 1) {
+    // label._tag IS NOT EMPTY
+
+    auto space = qctx->vctx()->whichSpace();
+    auto* schemaMng = qctx->schemaMng();
+    auto iter = goCtx_->exprProps.dstTagProps().begin();
+
+    auto tagName = schemaMng->toTagName(space.id, iter->first);
+
+    auto *tagExpr = TagPropertyExpression::make(pool, tagName.value(), kTag);
+    auto *filter = UnaryExpression::makeIsNotEmpty(pool, tagExpr);
+    getVertex->setFilter(filter);
+  }
+  */
+
   auto& dstPropsExpr = goCtx_->dstPropsExpr;
   // extract dst's prop
   auto* vidExpr = new YieldColumn(ColumnExpression::make(pool, VID_INDEX), "DST_VID");
@@ -386,10 +403,30 @@ SubPlan GoPlanner::oneStepPlan(SubPlan& startVidPlan) {
   auto qctx = goCtx_->qctx;
 
   auto* gn = GetNeighbors::make(qctx, startVidPlan.root, goCtx_->space.id);
+
   gn->setVertexProps(buildVertexProps(goCtx_->exprProps.srcTagProps()));
   gn->setEdgeProps(buildEdgeProps(false));
   gn->setSrc(goCtx_->from.src);
   gn->setInputVar(goCtx_->vidsVar);
+  
+  // auto *pool = qctx->objPool();
+  // Node has tag without property
+  /*
+  if (goCtx_->exprProps.srcTagProps().size() == 1) {
+    // label._tag IS NOT EMPTY
+
+    auto space = qctx->vctx()->whichSpace();
+    auto* schemaMng = qctx->schemaMng();
+    auto iter = goCtx_->exprProps.srcTagProps().begin();
+
+    auto tagName = schemaMng->toTagName(space.id, iter->first);
+
+    auto *tagExpr = TagPropertyExpression::make(pool, tagName.value(), kTag);
+    auto *filter = UnaryExpression::makeIsNotEmpty(pool, tagExpr);
+    gn->setFilter(filter);
+  }
+  */
+  
 
   auto* sampleLimit = buildSampleLimit(gn, 1 /* one step */);
 

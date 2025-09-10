@@ -27,9 +27,37 @@ void ExpressionProps::insertSrcTagProp(TagID tagId, folly::StringPiece prop) {
   props.emplace(prop);
 }
 
+void ExpressionProps::keepSrcTagProp(TagID tagId)
+{
+  std::vector<TagID> todels;
+  for (auto& item : srcTagProps_) {
+    if (item.first != tagId) todels.push_back(item.first);
+  }
+  for (auto& tagid : todels) {
+    auto iter = srcTagProps_.find(tagid);
+    if (iter != srcTagProps_.end()) srcTagProps_.erase(iter);
+  }
+
+  return ;
+}
+
 void ExpressionProps::insertDstTagProp(TagID tagId, folly::StringPiece prop) {
   auto &props = dstTagProps_[tagId];
   props.emplace(prop);
+}
+
+void ExpressionProps::keepDstTagProp(TagID tagId)
+{
+  std::vector<TagID> todels;
+  for (auto& item : dstTagProps_) {
+    if (item.first != tagId) todels.push_back(item.first);
+  }
+  for (auto& tagid : todels) {
+    auto iter = dstTagProps_.find(tagid);
+    if (iter != dstTagProps_.end()) dstTagProps_.erase(iter);
+  }
+
+  return ;
 }
 
 void ExpressionProps::insertEdgeProp(EdgeType edgeType, folly::StringPiece prop) {

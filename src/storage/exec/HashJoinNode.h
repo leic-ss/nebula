@@ -52,11 +52,26 @@ class HashJoinNode : public IterateNode<VertexID> {
     result_.setList(nebula::List());
     auto& result = result_.mutableList();
     if (context_->resultStat_ == ResultStatus::ILLEGAL_DATA) {
+      // DLOG(INFO) << "DEBUG2 VID: " << *reinterpret_cast<const int64_t*>(vId.data());
       return nebula::cpp2::ErrorCode::E_INVALID_DATA;
+    }
+
+    if (!tagNodes_.empty()) {
+      if (!std::any_of(tagNodes_.begin(), tagNodes_.end(), [](const auto& tagNode) {
+          return tagNode->valid();
+        })) {
+        for (auto* tagNode : tagNodes_) {
+          DLOG(WARNING) << "Invalid Vid: " << *reinterpret_cast<const int64_t*>(vId.data())
+                        << " TagName: " << tagNode->getTagName() << " TagId: " << tagNode->tagId();
+        }
+
+        return nebula::cpp2::ErrorCode::SUCCEEDED;
+      }
     }
 
     // add result of each tag node to tagResult
     for (auto* tagNode : tagNodes_) {
+      // DLOG(INFO) << "DEBUG3 VID: " << *reinterpret_cast<const int64_t*>(vId.data()) << " TAGID: " << tagNode->tagId();
       if (context_->isPlanKilled()) {
         return nebula::cpp2::ErrorCode::E_PLAN_IS_KILLED;
       }
@@ -106,7 +121,7 @@ class HashJoinNode : public IterateNode<VertexID> {
   }
 
   bool valid() const override {
-    return iter_->valid();
+    return iter_ && iter_->valid();
   }
 
   void next() override {

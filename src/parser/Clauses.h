@@ -175,11 +175,40 @@ class OverClause final {
     overEdges_ = std::make_unique<OverEdges>();
   }
 
+  OverClause(OverEdges *edges,
+             std::string *source,
+             std::string *target,
+             storage::cpp2::EdgeDirection direction = storage::cpp2::EdgeDirection::OUT_EDGE) {
+    overEdges_.reset(edges);
+    direction_ = direction;
+    sourcetag_.reset(source);
+    targettag_.reset(target);
+  }
+
+  OverClause(bool isOverAll,
+             std::string *source,
+             std::string *target,
+             storage::cpp2::EdgeDirection direction = storage::cpp2::EdgeDirection::OUT_EDGE) {
+    isOverAll_ = isOverAll;
+    direction_ = direction;
+    sourcetag_.reset(source);
+    targettag_.reset(target);
+    overEdges_ = std::make_unique<OverEdges>();
+  }
+
   std::vector<OverEdge *> edges() const {
     return overEdges_->edges();
   }
 
   std::string toString() const;
+
+  std::string* sourcetag() const {
+    return sourcetag_.get();
+  }
+
+  std::string* targettag() const {
+    return targettag_.get();
+  }
 
   storage::cpp2::EdgeDirection direction() const {
     return direction_;
@@ -192,6 +221,8 @@ class OverClause final {
  private:
   storage::cpp2::EdgeDirection direction_;
   std::unique_ptr<OverEdges> overEdges_;
+  std::unique_ptr<std::string> sourcetag_;
+  std::unique_ptr<std::string> targettag_;
   bool isOverAll_{false};
 };
 

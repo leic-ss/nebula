@@ -57,6 +57,35 @@ Status GoValidator::validateImpl() {
     return Status::SemanticError("Only support single input in a go sentence.");
   }
 
+  auto space = qctx_->vctx()->whichSpace();
+  auto* schemaMng = qctx_->schemaMng();
+
+  if (goSentence->overClause()->sourcetag()) {
+    auto tagId = schemaMng->toTagID(space.id, goSentence->overClause()->soucetag()->c_str());
+    if (!tagId.ok()) {
+      return Status::SemanticError("`%s' not found in space [`%s'].", goSentence->overClause()->sourcetag()->c_str(), space.name.c_str());
+    }
+
+    goCtx_->exprProps.keepSrcTagProp(tagId.value());
+
+    // for (auto& item : goCtx_->exprProps.srcTagProps()) {
+    //   VLOG(1) << "DEBUG srcTagProps: " << item.first << " propsize: " << item.second.size() << " targettagid: " << tagId.value();
+    // }
+  }
+
+  if (goSentence->overClause()->targettag()) {
+    auto tagId = schemaMng->toTagID(space.id, goSentence->overClause()->targettag()->c_str());
+    if (!tagId.ok()) {
+      return Status::SemanticError("`%s' not found in space [`%s'].", goSentence->overClause()->targettag()->c_str(), space.name.c_str());
+    }
+
+    goCtx_->exprProps.keepDstTagProp(tagId.value());
+
+    // for (auto& item : goCtx_->exprProps.dstTagProps()) {
+    //   VLOG(1) << "DEBUG dstTagProps: " << item.first << " propsize: " << item.second.size() << " targettagid: " << tagId.value();
+    // }
+  }
+
   NG_RETURN_IF_ERROR(buildColumns());
   return Status::OK();
 }

@@ -109,6 +109,14 @@ std::string OverClause::toString() const {
     buf += overEdges_->toString();
   }
 
+  if (!sourcetag_ && !targettag_) {
+    buf += "(" + *sourcetag_ + " -> " + *targettag_ + ")";
+  } else if (!sourcetag_) {
+    buf += "(" + *sourcetag_ + " -> )";
+  } else if (!targettag_) {
+    buf += "( -> " + *targettag_ + ")";
+  }
+
   if (direction_ == storage::cpp2::EdgeDirection::IN_EDGE) {
     buf += " REVERSELY";
   } else if (direction_ == storage::cpp2::EdgeDirection::BOTH) {
