@@ -29,6 +29,28 @@ void ExpressionProps::insertSrcTagProp(TagID tagId, folly::StringPiece prop) {
 
 void ExpressionProps::keepSrcTagProp(TagID tagId)
 {
+  if (srcTagProps_.empty()) {
+    if (!dstTagProps_.empty()) {
+      auto iter = dstTagProps_.find(tagId);
+      if (iter != dstTagProps_.end()) {
+        srcTagProps_.emplace(tagId, iter->second);
+      }
+
+      return ;
+    }
+
+    if (!tagProps_.empty()) {
+      auto iter = tagProps_.find(tagId);
+      if (iter != tagProps_.end()) {
+        srcTagProps_.emplace(tagId, iter->second);
+      }
+
+      return ;
+    }
+
+    return ;
+  }
+
   std::vector<TagID> todels;
   for (auto& item : srcTagProps_) {
     if (item.first != tagId) todels.push_back(item.first);
@@ -48,6 +70,28 @@ void ExpressionProps::insertDstTagProp(TagID tagId, folly::StringPiece prop) {
 
 void ExpressionProps::keepDstTagProp(TagID tagId)
 {
+  if (dstTagProps_.empty()) {
+    if (!srcTagProps_.empty()) {
+      auto iter = srcTagProps_.find(tagId);
+      if (iter != srcTagProps_.end()) {
+        srcTagProps_.emplace(tagId, iter->second);
+      }
+
+      return ;
+    }
+
+    if (!tagProps_.empty()) {
+      auto iter = tagProps_.find(tagId);
+      if (iter != tagProps_.end()) {
+        srcTagProps_.emplace(tagId, iter->second);
+      }
+
+      return ;
+    }
+
+    return ;
+  }
+
   std::vector<TagID> todels;
   for (auto& item : dstTagProps_) {
     if (item.first != tagId) todels.push_back(item.first);

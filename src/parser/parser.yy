@@ -228,7 +228,7 @@ using namespace nebula;
 %token <doubleval> DOUBLE
 %token <strval> STRING VARIABLE LABEL IPV4
 
-%type <strval> name_label unreserved_keyword predicate_name
+%type <strval> name_label name_labelext unreserved_keyword predicate_name
 %type <expr> expression expression_internal
 %type <expr> property_expression
 %type <expr> vertex_prop_expression
@@ -443,6 +443,12 @@ using namespace nebula;
 
 name_label
     : LABEL { $$ = $1; }
+    | unreserved_keyword { $$ = $1; }
+    ;
+
+name_labelext
+    : %empty { $$ = nullptr; }
+    | LABEL { $$ = $1; }
     | unreserved_keyword { $$ = $1; }
     ;
 
@@ -1521,22 +1527,22 @@ over_clause
     | KW_OVER over_edges KW_BIDIRECT {
         $$ = new OverClause($2, storage::cpp2::EdgeDirection::BOTH);
     }
-    | KW_OVER STAR L_PAREN name_label R_ARROW name_label R_PAREN {
+    | KW_OVER STAR L_PAREN name_labelext R_ARROW name_labelext R_PAREN {
         $$ = new OverClause(true, $4, $6);
     }
-    | KW_OVER STAR L_PAREN name_label R_ARROW name_label R_PAREN KW_REVERSELY {
+    | KW_OVER STAR L_PAREN name_labelext R_ARROW name_labelext R_PAREN KW_REVERSELY {
         $$ = new OverClause(true, $4, $6, storage::cpp2::EdgeDirection::IN_EDGE);
     }
-    | KW_OVER STAR L_PAREN name_label R_ARROW name_label R_PAREN KW_BIDIRECT {
+    | KW_OVER STAR L_PAREN name_labelext R_ARROW name_labelext R_PAREN KW_BIDIRECT {
         $$ = new OverClause(true, $4, $6, storage::cpp2::EdgeDirection::BOTH);
     }
-    | KW_OVER over_edges L_PAREN name_label R_ARROW name_label R_PAREN {
+    | KW_OVER over_edges L_PAREN name_labelext R_ARROW name_labelext R_PAREN {
         $$ = new OverClause($2, $4, $6);
     }
-    | KW_OVER over_edges L_PAREN name_label R_ARROW name_label R_PAREN KW_REVERSELY {
+    | KW_OVER over_edges L_PAREN name_labelext R_ARROW name_labelext R_PAREN KW_REVERSELY {
         $$ = new OverClause($2, $4, $6, storage::cpp2::EdgeDirection::IN_EDGE);
     }
-    | KW_OVER over_edges L_PAREN name_label R_ARROW name_label R_PAREN KW_BIDIRECT {
+    | KW_OVER over_edges L_PAREN name_labelext R_ARROW name_labelext R_PAREN KW_BIDIRECT {
         $$ = new OverClause($2, $4, $6, storage::cpp2::EdgeDirection::BOTH);
     }
     ;
