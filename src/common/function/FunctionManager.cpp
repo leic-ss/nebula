@@ -251,6 +251,14 @@ std::unordered_map<std::string, std::vector<TypeSignature>> FunctionManager::typ
      {
          TypeSignature({Value::Type::EDGE}, Value::Type::INT),
      }},
+    {"begintag",
+     {
+         TypeSignature({Value::Type::EDGE}, Value::Type::INT),
+     }},
+    {"endtag",
+     {
+         TypeSignature({Value::Type::EDGE}, Value::Type::INT),
+     }},
     {"startnode",
      {
          TypeSignature({Value::Type::EDGE}, Value::Type::VERTEX),
@@ -2008,6 +2016,47 @@ FunctionManager::FunctionManager() {
         }
         case Value::Type::EDGE: {
           return args[0].get().getEdge().ranking;
+          // return (int64_t) (args[0].get().getEdge().ranking & 0x3F);
+        }
+        default: {
+          return Value::kNullBadType;
+        }
+      }
+    };
+  }
+  {
+    auto &attr = functions_["begintag"];
+    attr.minArity_ = 1;
+    attr.maxArity_ = 1;
+    attr.isAlwaysPure_ = true;
+    attr.body_ = [](const auto &args) -> Value {
+      switch (args[0].get().type()) {
+        case Value::Type::NULLVALUE: {
+          return Value::kNullValue;
+        }
+        case Value::Type::EDGE: {
+          uint64_t rankval = args[0].get().getEdge().ranking;
+          return (int64_t) ( ( rankval >> 37 ) & 0x7FFF );
+        }
+        default: {
+          return Value::kNullBadType;
+        }
+      }
+    };
+  }
+  {
+    auto &attr = functions_["endtag"];
+    attr.minArity_ = 1;
+    attr.maxArity_ = 1;
+    attr.isAlwaysPure_ = true;
+    attr.body_ = [](const auto &args) -> Value {
+      switch (args[0].get().type()) {
+        case Value::Type::NULLVALUE: {
+          return Value::kNullValue;
+        }
+        case Value::Type::EDGE: {
+          uint64_t rankval = args[0].get().getEdge().ranking;
+          return (int64_t) ( ( rankval >> 10 ) & 0x7FFF );
         }
         default: {
           return Value::kNullBadType;
