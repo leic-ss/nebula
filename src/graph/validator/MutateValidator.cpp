@@ -289,7 +289,11 @@ Status InsertEdgesValidator::prepareEdges() {
     key.edge_type_ref() = edgeType_;
     key.ranking_ref() = rank;
     edge.key_ref() = key;
-    edge.props_ref() = std::move(entirePropValues);
+    if (!FLAGS_enable_experimental_feature) {
+      edge.props_ref() = entirePropValues;
+    } else {
+      edge.props_ref() = std::move(entirePropValues);
+    }
     edges_.emplace_back(edge);
     if (!FLAGS_enable_experimental_feature) {
       // inbound
@@ -297,6 +301,21 @@ Status InsertEdgesValidator::prepareEdges() {
       key.dst_ref() = srcId;
       key.edge_type_ref() = -edgeType_;
       edge.key_ref() = key;
+
+      auto iter1 = std::find(propNames_.begin(), propNames_.end(), "srctag");
+      auto iter2 = std::find(propNames_.begin(), propNames_.end(), "endtag");
+      if (iter1 != propNames_.end() && iter2 != propNames_.end()) {
+
+        auto dis1 = std::distance(propNames_.begin(), iter1);
+        auto v1 = props[dis1];
+        auto dis2 = std::distance(propNames_.begin(), iter2);
+        auto v2 = props[dis2];
+
+        entirePropValues[dis1] = v2;
+        entirePropValues[dis2] = v1;
+      }
+
+      edge.props_ref() = std::move(entirePropValues);
       edges_.emplace_back(std::move(edge));
     }
   }

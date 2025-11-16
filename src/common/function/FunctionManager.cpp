@@ -251,14 +251,14 @@ std::unordered_map<std::string, std::vector<TypeSignature>> FunctionManager::typ
      {
          TypeSignature({Value::Type::EDGE}, Value::Type::INT),
      }},
-    {"begintag",
+    /*{"begintag",
      {
          TypeSignature({Value::Type::EDGE}, Value::Type::INT),
      }},
     {"endtag",
      {
          TypeSignature({Value::Type::EDGE}, Value::Type::INT),
-     }},
+     }},*/
     {"startnode",
      {
          TypeSignature({Value::Type::EDGE}, Value::Type::VERTEX),
@@ -2024,7 +2024,7 @@ FunctionManager::FunctionManager() {
       }
     };
   }
-  {
+  /*{
     auto &attr = functions_["begintag"];
     attr.minArity_ = 1;
     attr.maxArity_ = 1;
@@ -2063,7 +2063,7 @@ FunctionManager::FunctionManager() {
         }
       }
     };
-  }
+  }*/
   {
     auto &attr = functions_["startnode"];
     attr.minArity_ = 1;

@@ -179,6 +179,20 @@ Status CreateEdgeValidator::validateImpl() {
   if (pro != nullptr) {
     return Status::SemanticError("Has the same name `%s' in the SequentialSentences", name.c_str());
   }
+
+  {
+    auto deault_ = new ColumnProperties();
+    deault_->addProperty( new ColumnProperty( true ) );
+    auto column_ =  new ColumnSpecification(new std::string("srctag"), nebula::cpp2::PropertyType::STRING, deault_, 0, meta::cpp2::GeoShape::ANY);
+    sentence->addColumn(column_);
+  }
+  {
+    auto deault_ = new ColumnProperties();
+    deault_->addProperty( new ColumnProperty( true ) );
+    auto column_ =  new ColumnSpecification(new std::string("endtag"), nebula::cpp2::PropertyType::STRING, deault_, 0, meta::cpp2::GeoShape::ANY);
+    sentence->addColumn(column_);
+  }
+
   meta::cpp2::Schema schema;
   NG_RETURN_IF_ERROR(checkColName(sentence->columnSpecs()));
   NG_RETURN_IF_ERROR(validateColumns(sentence->columnSpecs(), schema));

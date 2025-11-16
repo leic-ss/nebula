@@ -353,6 +353,10 @@ class CreateEdgeSentence final : public CreateSentence {
     return name_.get();
   }
 
+  void addColumn(ColumnSpecification *column) {
+    columns_->addColumn(column);
+  }
+
   std::vector<ColumnSpecification *> columnSpecs() const {
     return columns_->columnSpecs();
   }
