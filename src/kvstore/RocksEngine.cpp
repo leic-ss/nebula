@@ -18,6 +18,9 @@ DEFINE_bool(move_files, false, "Move the SST files instead of copy when ingest i
 DEFINE_int64(balance_expired_sesc,
              86400,
              "The expired time of balancing part info persisted in the storaged");
+DEFINE_int64(max_open_files,
+             -1,
+             "rocksdb max open files");
 
 namespace nebula {
 namespace kvstore {
@@ -73,6 +76,8 @@ RocksEngine::RocksEngine(GraphSpaceID spaceId,
   if (cfFactory != nullptr) {
     options.compaction_filter_factory = cfFactory;
   }
+
+  options.max_open_files = FLAGS_max_open_files;
 
   if (readonly) {
     status = rocksdb::DB::OpenForReadOnly(options, path, &db);

@@ -16,6 +16,7 @@
 #include "webservice/Router.h"
 #include "webservice/SetFlagsHandler.h"
 #include "webservice/StatusHandler.h"
+#include "webservice/MonitorReportHandler.h"
 
 DEFINE_int32(ws_http_port, 11000, "Port to listen on with HTTP protocol");
 DEFINE_string(ws_ip, "0.0.0.0", "IP/Hostname to bind to");
@@ -82,6 +83,10 @@ Status WebService::start(uint16_t httpPort) {
   router().get("/status").handler([](web::PathParams&& params) {
     DCHECK(params.empty());
     return new StatusHandler();
+  });
+  router().get("/monitor").handler([](web::PathParams&& params) {
+    DCHECK(params.empty());
+    return new MonitorReportHandler();
   });
   router().get("/").handler([](web::PathParams&& params) {
     DCHECK(params.empty());

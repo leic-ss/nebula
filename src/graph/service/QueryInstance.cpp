@@ -22,6 +22,8 @@
 #include "parser/Sentence.h"
 #include "parser/SequentialSentences.h"
 
+#include "common/monitor/MonitorReport.h"
+
 using nebula::opt::Optimizer;
 using nebula::opt::OptRule;
 using nebula::opt::RuleSet;
@@ -122,6 +124,20 @@ void QueryInstance::onFinish() {
   auto latency = rctx->duration().elapsedInUSec();
   rctx->resp().latencyInUs = latency;
   addSlowQueryStats(latency, spaceName);
+
+  uint32_t spaceid = rctx->session()->space().id;
+  int32_t error_code = (int32_t)(rctx->resp().errorCode);
+  if (sentence_->kind() == Sentence::Kind::kSequential) {
+    auto sentences_ = static_cast<const SequentialSentences *>(sentence_.get());
+    for (auto sentence : sentences_->sentences()) {
+      monitor::GraphOpType cmd = (monitor::GraphOpType)sentence->kind();
+      monitor::monitor_report::instance()->server_request_report(spaceid, cmd, error_code, rctx->duration().elapsedInMSec(), 1, 1);
+    }
+  } else {
+    monitor::GraphOpType cmd = (monitor::GraphOpType)sentence_->kind();
+    monitor::monitor_report::instance()->server_request_report(spaceid, cmd, error_code, rctx->duration().elapsedInMSec(), 1, 1);
+  }
+
   rctx->finish();
 
   rctx->session()->deleteQuery(qctx_.get());

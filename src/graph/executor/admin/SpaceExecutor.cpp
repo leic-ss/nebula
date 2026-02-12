@@ -216,17 +216,18 @@ folly::Future<Status> ShowSpacesExecutor::execute() {
         }
         auto spaceItems = std::move(resp).value();
 
-        DataSet dataSet({"Name"});
-        std::set<std::string> orderSpaceNames;
+        DataSet dataSet({"ID", "Name"});
+        std::unordered_map<int32_t, std::string> orderSpaceNames;
         for (auto &space : spaceItems) {
           if (!PermissionManager::canReadSpace(qctx_->rctx()->session(), space.first).ok()) {
             continue;
           }
-          orderSpaceNames.emplace(space.second);
+          orderSpaceNames.emplace(space.first, space.second);
         }
-        for (auto &name : orderSpaceNames) {
+        for (auto &item : orderSpaceNames) {
           Row row;
-          row.values.emplace_back(name);
+          row.values.emplace_back(item.first);
+          row.values.emplace_back(item.second);
           dataSet.rows.emplace_back(std::move(row));
         }
         return finish(ResultBuilder()

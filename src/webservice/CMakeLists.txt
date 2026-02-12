@@ -9,6 +9,7 @@ nebula_add_library(
     GetFlagsHandler.cpp
     SetFlagsHandler.cpp
     GetStatsHandler.cpp
+    MonitorReportHandler.cpp
     Router.cpp
     StatusHandler.cpp
 )

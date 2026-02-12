@@ -23,6 +23,8 @@
 #include "version/Version.h"
 #include "webservice/WebService.h"
 
+#include "common/monitor/MonitorReport.h"
+
 using nebula::ProcessUtils;
 using nebula::Status;
 using nebula::StatusOr;
@@ -143,6 +145,11 @@ int main(int argc, char *argv[]) {
     return EXIT_FAILURE;
   }
   LOG(INFO) << "Number of worker threads: " << FLAGS_num_worker_threads;
+
+  nebula::monitor::monitor_report::instance()->set_port(FLAGS_port);
+  nebula::monitor::monitor_report::instance()->set_module("graphd");
+  nebula::monitor::monitor_report::instance()->initialize();
+  nebula::monitor::monitor_report::instance()->start();
 
   auto graphServer = std::make_unique<nebula::graph::GraphServer>(localhost);
   // Setup the signal handlers
