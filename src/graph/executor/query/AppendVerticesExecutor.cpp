@@ -45,6 +45,17 @@ folly::Future<Status> AppendVerticesExecutor::appendVertices() {
                                           qctx()->plan()->isProfileEnabled());
 
   time::Duration getPropsTime;
+  if ( av->filter() ) {
+    VLOG(1) << "appendVertices filter: " << av->filter()->toString();
+  } else {
+    VLOG(1) << "appendVertices filter is null";
+  }
+  if ( av->vFilter() ) {
+    VLOG(1) << "appendVertices vFilter: " << av->vFilter()->toString();
+  } else {
+    VLOG(1) << "appendVertices vFilter is null";
+  }
+
   return DCHECK_NOTNULL(storageClient)
       ->getProps(param,
                  std::move(vertices),

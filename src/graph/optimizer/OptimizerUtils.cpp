@@ -121,6 +121,12 @@ StatusOr<ScoredColumnHint> selectRelExprIndex(const ColumnDef& field,
       hint.score = IndexScore::kPrefix;
       break;
     }
+    case Expression::Kind::kStartsWith: {
+      handleEqualIndex(field, value, &hint.hint);
+      hint.score = IndexScore::kPrefix;
+      hint.hint.include_end_ref() = true;
+      break;
+    }
     case Expression::Kind::kRelGE:
     case Expression::Kind::kRelGT:
     case Expression::Kind::kRelLE:

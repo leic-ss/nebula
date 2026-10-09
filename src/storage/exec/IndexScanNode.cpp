@@ -316,8 +316,33 @@ PrefixPath::PrefixPath(nebula::meta::cpp2::IndexItem* index,
 
 QualifiedStrategy::Result PrefixPath::qualified(const Map<std::string, Value>& rowData) {
   for (auto& hint : hints_) {
-    if (hint.get_begin_value() != rowData.at(hint.get_column_name())) {
-      return QualifiedStrategy::INCOMPATIBLE;
+    if (!hint.get_include_end()) {
+
+      // LOG(WARNING) << "qualified: " << hint.get_begin_value().toString();
+      // LOG(WARNING) << "qualified: " << rowData.at(hint.get_column_name()).toString();
+
+      if (hint.get_begin_value() != rowData.at(hint.get_column_name())) {
+        return QualifiedStrategy::INCOMPATIBLE;
+      }
+    } else {
+
+      // LOG(WARNING) << "qualified: " << hint.get_begin_value().toString();
+      // LOG(WARNING) << "qualified: " << rowData.at(hint.get_column_name()).toString();
+
+      if (!hint.get_begin_value().isStr() || !rowData.at(hint.get_column_name()).isStr() ) {
+        return QualifiedStrategy::INCOMPATIBLE;
+      }
+
+      const std::string& str1 = hint.get_begin_value().getStr();
+      const std::string& str2 = rowData.at(hint.get_column_name()).getStr();
+
+      // LOG(WARNING) << "qualified: " << str1;
+      // LOG(WARNING) << "qualified: " << str2;
+
+      int32_t pos = str2.find(str1);
+      if (pos != 0) {
+        return QualifiedStrategy::INCOMPATIBLE;
+      }
     }
   }
   return QualifiedStrategy::COMPATIBLE;
@@ -340,6 +365,13 @@ void PrefixPath::buildKey() {
     encodeValue(hint.get_begin_value(), fieldIter->get_type(), i, common);
     serializeString_ +=
         fmt::format("{}={}, ", hint.get_column_name(), hint.get_begin_value().toString());
+
+    if (hint.get_include_end()) {
+      strategySet_.insert(QualifiedStrategy::constant<QualifiedStrategy::UNCERTAIN>());
+      while (!common.empty() && common.back() == '\0') {
+        common.pop_back();
+      }
+    }
   }
   for (; fieldIter != index_->get_fields().end(); fieldIter++) {
     if (UNLIKELY(fieldIter->get_type().get_type() == nebula::cpp2::PropertyType::GEOGRAPHY)) {
@@ -348,6 +380,8 @@ void PrefixPath::buildKey() {
     }
   }
   prefix_ = std::move(common);
+
+  // LOG(WARNING) << "qualified prefix_: " << prefix_;
 }
 
 // End of PrefixPath

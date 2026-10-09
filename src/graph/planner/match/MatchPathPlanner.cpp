@@ -303,6 +303,13 @@ Status MatchPathPlanner::leftExpandFromNode(
   appendV->setVertexProps(std::move(vertexProps).value());
   appendV->setSrc(nextTraverseStart);
   appendV->setVertexFilter(genVertexFilter(node));
+
+  if (genVertexFilter(node)) {
+    VLOG(1) << "genVertexFilter(node) " << genVertexFilter(node)->toString();
+  } else {
+    VLOG(1) << "genVertexFilter(node) is null";
+  }
+  
   appendV->setDedup();
   appendV->setTrackPrevPath(!edgeInfos.empty());
   appendV->setColNames(genAppendVColNames(subplan.root->colNames(), node, !edgeInfos.empty()));
@@ -366,6 +373,12 @@ Status MatchPathPlanner::rightExpandFromNode(
   appendV->setVertexProps(std::move(vertexProps).value());
   appendV->setSrc(nextTraverseStart);
   appendV->setVertexFilter(genVertexFilter(node));
+
+  if (genVertexFilter(node)) {
+    VLOG(1) << "genVertexFilter(node) " << genVertexFilter(node)->toString();
+  } else {
+    VLOG(1) << "genVertexFilter(node) is null";
+  }
   appendV->setDedup();
   appendV->setTrackPrevPath(!edgeInfos.empty());
   appendV->setColNames(genAppendVColNames(subplan.root->colNames(), node, !edgeInfos.empty()));

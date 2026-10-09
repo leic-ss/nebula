@@ -224,6 +224,13 @@ Status MatchValidator::buildNodeInfo(const MatchPath *path,
         filter = andConnect(pool, filter, result.value());
       }
     }
+
+    if (filter) {
+      VLOG(1) << "filter is " << filter.toString();
+    } else {
+      VLOG(1) << "filter is null";
+    }
+
     nodeInfos[i].anonymous = anonymous;
     nodeInfos[i].alias = alias;
     nodeInfos[i].props = props;
