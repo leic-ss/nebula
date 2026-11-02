@@ -240,6 +240,7 @@ enum JobType {
     INGEST                   = 8,
     LEADER_BALANCE           = 9,
     ZONE_BALANCE             = 10,
+    REBUILD_TAG_INDEX_OFFLINE  = 11,
     UNKNOWN                  = 99,
 } (cpp.enum_strict)
 
